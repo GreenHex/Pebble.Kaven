@@ -11,6 +11,160 @@
         "resources": {
             "media": [
                 {
+                    "file": "images/m_25.png",
+                    "name": "IMAGE_M_25",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/m_55.png",
+                    "name": "IMAGE_M_55",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/m_50.png",
+                    "name": "IMAGE_M_50",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/m_45.png",
+                    "name": "IMAGE_M_45",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/m_40.png",
+                    "name": "IMAGE_M_40",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/m_35.png",
+                    "name": "IMAGE_M_35",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/m_30.png",
+                    "name": "IMAGE_M_30",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/m_20.png",
+                    "name": "IMAGE_M_20",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/m_15.png",
+                    "name": "IMAGE_M_15",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/m_10.png",
+                    "name": "IMAGE_M_10",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/m_05.png",
+                    "name": "IMAGE_M_05",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/m_00.png",
+                    "name": "IMAGE_M_00",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/h_12.png",
+                    "name": "IMAGE_H_12",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/h_11.png",
+                    "name": "IMAGE_H_11",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/h_10.png",
+                    "name": "IMAGE_H_10",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/h_09.png",
+                    "name": "IMAGE_H_09",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/h_08.png",
+                    "name": "IMAGE_H_08",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/h_07.png",
+                    "name": "IMAGE_H_07",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/h_06.png",
+                    "name": "IMAGE_H_06",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/h_05.png",
+                    "name": "IMAGE_H_05",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/h_04.png",
+                    "name": "IMAGE_H_04",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/h_03.png",
+                    "name": "IMAGE_H_03",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/h_02.png",
+                    "name": "IMAGE_H_02",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/h_01.png",
+                    "name": "IMAGE_H_01",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/12sq.png",
+                    "name": "IMAGE_12_SQ",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite"
+                    ],
+                    "type": "bitmap"
+                },
+                {
                     "file": "images/Mouse W.png",
                     "name": "IMAGE_MOUSE_W",
                     "targetPlatforms": [
@@ -23,17 +177,6 @@
                 {
                     "file": "images/Mouse B.png",
                     "name": "IMAGE_MOUSE_B",
-                    "targetPlatforms": [
-                        "aplite",
-                        "basalt",
-                        "diorite"
-                    ],
-                    "type": "bitmap"
-                },
-                {
-                    "file": "images/Anery.Minus.SQ Icon.png",
-                    "menuIcon": true,
-                    "name": "IMAGE_ICON",
                     "targetPlatforms": [
                         "aplite",
                         "basalt",
@@ -55,7 +198,7 @@
                 {
                     "characterRegex": "[a-zA-Z0-9 ]",
                     "file": "fonts/Prelude Bold.ttf",
-                    "name": "FONT_PRELUDE_BOLD_30",
+                    "name": "FONT_PRELUDE_BOLD_26",
                     "targetPlatforms": [
                         "aplite",
                         "basalt",

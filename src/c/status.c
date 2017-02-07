@@ -15,7 +15,7 @@ static void status_layer_update_proc( Layer *layer, GContext *ctx ) {
 
 // #define DATE_STRING "%a, %e-%b-%Y"
 #define DATE_STRING "%a %e"
-#define ALT_STATUS_FONT RESOURCE_ID_FONT_PRELUDE_BOLD_30
+#define ALT_STATUS_FONT RESOURCE_ID_FONT_PRELUDE_BOLD_26
 // #define ALT_STATUS_FONT RESOURCE_ID_FONT_PRELUDE_MEDIUM_30
 
 static void status_text_layer_update_proc( Layer *layer, GContext *ctx ) {
