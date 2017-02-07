@@ -1,0 +1,80 @@
+{
+    "author": "The Resetter",
+    "dependencies": {},
+    "keywords": [],
+    "name": "kaven-v1.0",
+    "pebble": {
+        "displayName": "Kaven",
+        "enableMultiJS": true,
+        "messageKeys": [],
+        "projectType": "native",
+        "resources": {
+            "media": [
+                {
+                    "file": "images/Mouse W.png",
+                    "name": "IMAGE_MOUSE_W",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/Mouse B.png",
+                    "name": "IMAGE_MOUSE_B",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/Anery.Minus.SQ Icon.png",
+                    "menuIcon": true,
+                    "name": "IMAGE_ICON",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "characterRegex": "[a-zA-Z0-9 ]",
+                    "file": "fonts/Prelude-Medium.ttf",
+                    "name": "FONT_PRELUDE_MEDIUM_30",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite"
+                    ],
+                    "type": "font"
+                },
+                {
+                    "characterRegex": "[a-zA-Z0-9 ]",
+                    "file": "fonts/Prelude Bold.ttf",
+                    "name": "FONT_PRELUDE_BOLD_30",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite"
+                    ],
+                    "type": "font"
+                }
+            ]
+        },
+        "sdkVersion": "3",
+        "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "diorite"
+        ],
+        "uuid": "cb9d1421-b274-4045-9f3f-1bccecb45b8a",
+        "watchapp": {
+            "watchface": true
+        }
+    },
+    "version": "1.0.0"
+}
