@@ -104,10 +104,6 @@ static void dial_layer_update_proc( Layer *layer, GContext *ctx ) {
   graphics_context_set_fill_color( ctx, background_colour );
   graphics_fill_rect( ctx, bounds, CLOCK_CORNER_RADIUS, GCornerNone );
 
-  graphics_context_set_fill_color( ctx, foreground_colour );
-  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 4 ) ), GOvalScaleModeFitCircle, 16, 0, DEG_TO_TRIGANGLE ( 360 ) );
-  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 24 ) ), GOvalScaleModeFitCircle, 16, 0, DEG_TO_TRIGANGLE ( 360 ) );
-  
   draw_seconds_ticks( & (DRAW_TICKS_PARAMS) { 
     .layer = layer, 
     .ctx = ctx, 
@@ -118,6 +114,11 @@ static void dial_layer_update_proc( Layer *layer, GContext *ctx ) {
     .tick_colour = GColorWhite, 
     .bg_colour = background_colour
   } );
+  
+  graphics_context_set_fill_color( ctx, foreground_colour );
+  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 4 ) ), GOvalScaleModeFitCircle, 16, 0, DEG_TO_TRIGANGLE ( 360 ) );
+  graphics_context_set_fill_color( ctx, GColorBrass /* foreground_colour */ );
+  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 24 ) ), GOvalScaleModeFitCircle, 16, 0, DEG_TO_TRIGANGLE ( 360 ) );
   //
   return;
   //
@@ -153,11 +154,11 @@ static void hours_layer_update_proc( Layer *layer, GContext *ctx ) {
     .from_pt = center_pt,
     .to_pt = hour_hand,
     .hand_width = HOUR_HAND_WIDTH,
-    .hand_colour = GColorBlack, /* foreground_colour, */
-    .hand_outline_colour = GColorWhite, /* background_colour, */
+    .hand_colour =  GColorBrass, /* foreground_colour, */
+    .hand_outline_colour = GColorBlack, /* background_colour, */
     .dot_radius = HOUR_CENTER_DOT_RADIUS,
-    .dot_colour = GColorBlack,
-    .dot_outline_colour = GColorWhite, /* background_colour, */
+    .dot_colour = GColorBrass,
+    .dot_outline_colour = GColorBlack, /* background_colour, */
   } );
 }
 
@@ -177,11 +178,11 @@ static void minutes_layer_update_proc( Layer *layer, GContext *ctx ) {
     .from_pt = center_pt,
     .to_pt = minute_hand,
     .hand_width = MIN_HAND_WIDTH,
-    .hand_colour = GColorBlack, /* foreground_colour, */
-    .hand_outline_colour = GColorWhite, /* background_colour, */
+    .hand_colour = GColorWhite, /* foreground_colour, */
+    .hand_outline_colour = GColorBlack, /* background_colour, */
     .dot_radius = MIN_CENTER_DOT_RADIUS,
-    .dot_colour = GColorBlack,
-    .dot_outline_colour = GColorWhite, /* background_colour, */
+    .dot_colour = GColorWhite,
+    .dot_outline_colour = GColorBlack, /* background_colour, */
   } );
 }
 
