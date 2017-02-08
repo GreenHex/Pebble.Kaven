@@ -100,11 +100,11 @@ static void dial_layer_update_proc( Layer *layer, GContext *ctx ) {
   GRect bounds = layer_get_bounds( layer );
   graphics_context_set_antialiased( ctx, true );
   graphics_context_set_fill_color( ctx, background_colour );
-  graphics_fill_rect( ctx, bounds, CLOCK_CORNER_RADIUS, GCornersAll );
+  graphics_fill_rect( ctx, bounds, CLOCK_CORNER_RADIUS, GCornerNone );
 
   graphics_context_set_fill_color( ctx, foreground_colour );
-  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 4 ) ), GOvalScaleModeFitCircle, 13, 0, DEG_TO_TRIGANGLE ( 360 ) );
-  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 20 ) ), GOvalScaleModeFitCircle, 13, 0, DEG_TO_TRIGANGLE ( 360 ) );
+  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 4 ) ), GOvalScaleModeFitCircle, 15, 0, DEG_TO_TRIGANGLE ( 360 ) );
+  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 24 ) ), GOvalScaleModeFitCircle, 16, 0, DEG_TO_TRIGANGLE ( 360 ) );
 
   //
   return;
@@ -315,16 +315,12 @@ static void r_layer_update_proc( Layer *layer, GContext *ctx ) {
   graphics_fill_rect( ctx, bounds, 0, GCornerNone );
 }
 
-void clock_init( Window* window ){
-  time_t now = time( NULL ) - ( 60 * 45 );
-  tm_time = *localtime( &now );
-  
+void clock_init( Window* window ){  
   window_layer = window_get_root_layer( window );
-  srand( time( NULL ) );
-  
   foreground_colour = BACKGROUND_COLOUR;
   background_colour = FOREGROUND_COLOUR;
   #ifdef RANDOMIZE_CLOCKFACE_COLOURS
+  srand( time( NULL ) );
   randomize_colours();
   #endif
   
@@ -343,9 +339,10 @@ void clock_init( Window* window ){
     layer_add_child( dial_layer, (Layer *) m_layer[i] );
     GRect b = layer_get_frame( (Layer *) m_layer[i] );
     GRect a = grect_centered_from_polar( grect_inset( CLOCK_DIAL_RECT, GEdgeInsets( 11 ) ),
-                                        GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE ( i * 30 ), GSize( 13, 13 ) );
-    b.origin.x = a.origin.x - a.size.w / 2;
-    b.origin.y = a.origin.y - a.size.h / 2;
+                                        GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE ( i * 30 ), GSize( 0, 0 ) );
+    // layer_set_update_proc( (Layer *) m_layer[i], r_layer_update_proc );
+    b.origin.x = a.origin.x - b.size.w / 2;
+    b.origin.y = a.origin.y - b.size.h / 2;
     layer_set_frame( (Layer *) m_layer[i], b );
   }
   for ( int i = 0;  i < NUM_DIGITS ; i++ ) {
@@ -356,11 +353,11 @@ void clock_init( Window* window ){
     // rot_bitmap_set_src_ic( h_layer, GPoint( -6, -6 ) );
     layer_add_child( dial_layer, (Layer *) h_layer[i] );
     GRect b = layer_get_frame( (Layer *) h_layer[i] );
-    GRect a = grect_centered_from_polar( grect_inset( CLOCK_DIAL_RECT, GEdgeInsets( 10 + 12 + 4 ) ),
-                                        GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE ( i * 30 ), GSize( 13, 13 ) );
+    GRect a = grect_centered_from_polar( grect_inset( CLOCK_DIAL_RECT, GEdgeInsets( 32 ) ),
+                                        GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE ( i * 30 ), GSize( 0, 0 ) );
     // layer_set_update_proc( (Layer *) h_layer[i], r_layer_update_proc );
-    b.origin.x = a.origin.x - a.size.w / 2;
-    b.origin.y = a.origin.y - a.size.h / 2;
+    b.origin.x = a.origin.x - b.size.w / 2;
+    b.origin.y = a.origin.y - b.size.h / 2;
     layer_set_frame( (Layer *) h_layer[i], b );
   }
   
@@ -381,9 +378,7 @@ void clock_init( Window* window ){
   seconds_layer = layer_create( dial_layer_bounds );
   layer_set_update_proc( seconds_layer, seconds_layer_update_proc );
   layer_add_child( dial_layer, seconds_layer );
-}
-
-void implementation_teardown( Animation *animation ) {
+  
   #ifdef ALLOW_TIMELINE_QV
   unobstructed_area_service_subscribe( (UnobstructedAreaHandlers) { .change = unobstructed_change_proc }, window_layer );
   #endif
@@ -397,8 +392,6 @@ void implementation_teardown( Animation *animation ) {
   
   time_t now = time( NULL );
   handle_clock_tick( localtime( &now ), 0 );
-
-  animation_destroy( animation );
 }
 
 void clock_deinit( void ) {

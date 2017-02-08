@@ -11,6 +11,13 @@
         "resources": {
             "media": [
                 {
+                    "file": "images/Kaven Icon.png",
+                    "menuIcon": true,
+                    "name": "IMAGE_ICON",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
                     "file": "images/m_25.png",
                     "name": "IMAGE_M_25",
                     "targetPlatforms": null,
@@ -214,7 +221,7 @@
             "basalt",
             "diorite"
         ],
-        "uuid": "cb9d1421-b274-4045-9f3f-1bccecb45b8a",
+        "uuid": "30c0d64f-8b47-439f-a8b6-7187ed35ce35",
         "watchapp": {
             "watchface": true
         }
