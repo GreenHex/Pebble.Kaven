@@ -160,6 +160,11 @@ static void hours_layer_update_proc( Layer *layer, GContext *ctx ) {
     .dot_colour = GColorBrass,
     .dot_outline_colour = GColorBlack, /* background_colour, */
   } );
+  // graphics_context_set_fill_color( ctx, GColorBlue );
+  // graphics_fill_circle( ctx, hour_hand, 2 );
+  graphics_context_set_stroke_color( ctx, GColorBlue );
+  graphics_context_set_stroke_width( ctx, 1 );
+  graphics_draw_line( ctx, center_pt, hour_hand );
 }
 
 static void minutes_layer_update_proc( Layer *layer, GContext *ctx ) {
@@ -184,6 +189,13 @@ static void minutes_layer_update_proc( Layer *layer, GContext *ctx ) {
     .dot_colour = GColorWhite,
     .dot_outline_colour = GColorBlack, /* background_colour, */
   } );
+  // graphics_context_set_fill_color( ctx, GColorRed );
+  // graphics_fill_circle( ctx, minute_hand, 1 );
+  graphics_context_set_stroke_color( ctx, GColorRed );
+  graphics_context_set_stroke_width( ctx, 1 );
+  graphics_draw_line( ctx, center_pt, minute_hand );
+  graphics_context_set_fill_color( ctx, GColorRed );
+  graphics_fill_circle( ctx, center_pt, 3 );
 }
 
 static void seconds_layer_update_proc( Layer *layer, GContext *ctx ) {
@@ -340,28 +352,23 @@ void clock_init( Window* window ){
     rot_bitmap_layer_set_angle( m_layer[i], DEG_TO_TRIGANGLE ( i * 30 ) );
     rot_bitmap_set_compositing_mode( m_layer[i], GCompOpSet );
     layer_add_child( dial_layer, (Layer *) m_layer[i] );
-    GRect b = layer_get_frame( (Layer *) m_layer[i] );
-    GRect a = grect_centered_from_polar( grect_inset( CLOCK_DIAL_RECT, GEdgeInsets( 12 ) ),
-                                        GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE ( i * 30 ), GSize( 0, 0 ) );
+    GRect digit_rect = layer_get_frame( (Layer *) m_layer[i] );
+    digit_rect = grect_centered_from_polar( grect_inset( CLOCK_DIAL_RECT, GEdgeInsets( 12 ) ),
+                                        GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE ( i * 30 ), GSize( digit_rect.size.w, digit_rect.size.h ) );
     // layer_set_update_proc( (Layer *) m_layer[i], r_layer_update_proc );
-    b.origin.x = a.origin.x - b.size.w / 2;
-    b.origin.y = a.origin.y - b.size.h / 2;
-    layer_set_frame( (Layer *) m_layer[i], b );
+    layer_set_frame( (Layer *) m_layer[i], digit_rect );
   }
   for ( int i = 0;  i < NUM_DIGITS ; i++ ) {
     h_bitmap[i] = gbitmap_create_with_resource( H_BITMAPS[i] );
     h_layer[i] = rot_bitmap_layer_create( h_bitmap[i] );
     rot_bitmap_layer_set_angle( h_layer[i], DEG_TO_TRIGANGLE ( i * 30 ) );
     rot_bitmap_set_compositing_mode( h_layer[i], GCompOpSet );
-    // rot_bitmap_set_src_ic( h_layer, GPoint( -6, -6 ) );
     layer_add_child( dial_layer, (Layer *) h_layer[i] );
-    GRect b = layer_get_frame( (Layer *) h_layer[i] );
-    GRect a = grect_centered_from_polar( grect_inset( CLOCK_DIAL_RECT, GEdgeInsets( 32 ) ),
-                                        GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE ( i * 30 ), GSize( 0, 0 ) );
+    GRect digit_rect = layer_get_frame( (Layer *) h_layer[i] );
+    digit_rect = grect_centered_from_polar( grect_inset( CLOCK_DIAL_RECT, GEdgeInsets( 32 ) ),
+                                        GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE ( i * 30 ), GSize( digit_rect.size.w, digit_rect.size.h ) );
     // layer_set_update_proc( (Layer *) h_layer[i], r_layer_update_proc );
-    b.origin.x = a.origin.x - b.size.w / 2;
-    b.origin.y = a.origin.y - b.size.h / 2;
-    layer_set_frame( (Layer *) h_layer[i], b );
+    layer_set_frame( (Layer *) h_layer[i], digit_rect );
   }
   
   snooze_layer = layer_create( SNOOZE_LAYER_FRAME );
