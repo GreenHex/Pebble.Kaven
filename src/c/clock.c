@@ -221,7 +221,7 @@ static void seconds_layer_update_proc( Layer *layer, GContext *ctx ) {
     .from_pt = sec_hand,
     .to_pt = sec_hand_tail,
     .hand_width = SEC_HAND_WIDTH,
-    .hand_colour = GColorOrange,
+    .hand_colour = GColorDarkCandyAppleRed,
     .hand_outline_colour = GColorOrange,
     .dot_radius = SEC_CENTER_DOT_RADIUS,
     .dot_colour = GColorOrange,
@@ -248,7 +248,7 @@ static void stop_seconds_display( void* data ) { // after timer elapses
   tick_timer_service_subscribe( MINUTE_UNIT, handle_clock_tick );
 }
 
-void start_seconds_display( AccelAxisType axis, int32_t direction ) {
+static void start_seconds_display( AccelAxisType axis, int32_t direction ) {
   tick_timer_service_subscribe( SECOND_UNIT, handle_clock_tick );
   show_name = show_seconds = true;
   if ( secs_display_apptimer ) {
@@ -393,13 +393,14 @@ void clock_init( Window* window ){
   unobstructed_area_service_subscribe( (UnobstructedAreaHandlers) { .change = unobstructed_change_proc }, window_layer );
   #endif
   
-  #ifdef SHOW_SECONDS
+  #ifdef ALWAYS_SHOW_SECONDS
   tick_timer_service_subscribe( SECOND_UNIT, handle_clock_tick );
   #else
   tick_timer_service_subscribe( MINUTE_UNIT, handle_clock_tick );
   #endif
+  #ifndef ALWAYS_SHOW_SECONDS
   accel_tap_service_subscribe( start_seconds_display );
-  
+  #endif
   time_t now = time( NULL );
   handle_clock_tick( localtime( &now ), 0 );
 }
