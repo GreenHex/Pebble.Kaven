@@ -8,8 +8,8 @@
 
 static GPathInfo PATH_TICK = {
   2, (GPoint []) {
-    { 0, - ( CLOCK_DIAL_SIZE_W > CLOCK_DIAL_SIZE_H ? CLOCK_DIAL_SIZE_W : CLOCK_DIAL_SIZE_H ) },
-    { 0, ( CLOCK_DIAL_SIZE_W >  CLOCK_DIAL_SIZE_H ? CLOCK_DIAL_SIZE_W : CLOCK_DIAL_SIZE_H ) }
+    { 0, - ( CLOCK_DIAL_SIZE_W/2 - 4 ) },
+    { 0, ( CLOCK_DIAL_SIZE_W/2 - 4 ) }
   }
 };
 

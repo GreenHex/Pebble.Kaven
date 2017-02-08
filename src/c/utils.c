@@ -35,7 +35,8 @@ void draw_seconds_ticks( DRAW_TICKS_PARAMS *pDTP ) {
     gpath_draw_outline( pDTP->ctx, gpath );
   }
   graphics_context_set_fill_color( pDTP->ctx, pDTP->bg_colour );
-  graphics_fill_rect( pDTP->ctx, grect_inset( bounds, GEdgeInsets( pDTP->tick_length ) ), 0, GCornerNone );
+  graphics_fill_circle( pDTP->ctx, center_pt, CLOCK_DIAL_SIZE_W/2 - 40 );
+  // graphics_fill_rect( pDTP->ctx, grect_inset( bounds, GEdgeInsets( pDTP->tick_length ) ), 0, GCornerNone );
   gpath_destroy( gpath );
 }
 
@@ -47,7 +48,7 @@ void draw_clock_hand( HAND_DRAW_PARAMS *pDP ) {
   graphics_draw_circle( pDP->ctx, pDP->center_pt, pDP->dot_radius );
   // hand outline
   graphics_context_set_stroke_color( pDP->ctx, pDP->hand_outline_colour );
-  graphics_context_set_stroke_width( pDP->ctx, pDP->hand_width + 2);
+  graphics_context_set_stroke_width( pDP->ctx, pDP->hand_width + 2 );
   graphics_draw_line( pDP->ctx, pDP->from_pt, pDP->to_pt );
   // hand
   graphics_context_set_stroke_color( pDP->ctx, pDP->hand_colour );

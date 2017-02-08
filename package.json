@@ -162,16 +162,6 @@
                     "type": "bitmap"
                 },
                 {
-                    "file": "images/12sq.png",
-                    "name": "IMAGE_12_SQ",
-                    "targetPlatforms": [
-                        "aplite",
-                        "basalt",
-                        "diorite"
-                    ],
-                    "type": "bitmap"
-                },
-                {
                     "file": "images/Mouse W.png",
                     "name": "IMAGE_MOUSE_W",
                     "targetPlatforms": [

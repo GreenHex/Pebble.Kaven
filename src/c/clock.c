@@ -23,6 +23,8 @@ const uint32_t PBL_64_COLOURS[ NUM_PBL_64_COLOURS ] = {
 };
 #endif
 
+extern bool show_name;
+
 tm tm_time;
 GColor foreground_colour;
 GColor background_colour;
@@ -103,22 +105,22 @@ static void dial_layer_update_proc( Layer *layer, GContext *ctx ) {
   graphics_fill_rect( ctx, bounds, CLOCK_CORNER_RADIUS, GCornerNone );
 
   graphics_context_set_fill_color( ctx, foreground_colour );
-  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 4 ) ), GOvalScaleModeFitCircle, 15, 0, DEG_TO_TRIGANGLE ( 360 ) );
+  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 4 ) ), GOvalScaleModeFitCircle, 16, 0, DEG_TO_TRIGANGLE ( 360 ) );
   graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 24 ) ), GOvalScaleModeFitCircle, 16, 0, DEG_TO_TRIGANGLE ( 360 ) );
-
-  //
-  return;
-  //
+  
   draw_seconds_ticks( & (DRAW_TICKS_PARAMS) { 
     .layer = layer, 
     .ctx = ctx, 
     .p_gpath_info = &PATH_TICK, 
     .increment = 5, 
     .tick_thk = 1, 
-    .tick_length = 12, 
-    .tick_colour = foreground_colour, 
+    .tick_length = 30, 
+    .tick_colour = GColorWhite, 
     .bg_colour = background_colour
   } );
+  //
+  return;
+  //
   draw_seconds_ticks( & (DRAW_TICKS_PARAMS) {
     .layer = layer,
     .ctx = ctx,
@@ -152,10 +154,10 @@ static void hours_layer_update_proc( Layer *layer, GContext *ctx ) {
     .to_pt = hour_hand,
     .hand_width = HOUR_HAND_WIDTH,
     .hand_colour = GColorBlack, /* foreground_colour, */
-    .hand_outline_colour = background_colour,
+    .hand_outline_colour = GColorWhite, /* background_colour, */
     .dot_radius = HOUR_CENTER_DOT_RADIUS,
     .dot_colour = GColorBlack,
-    .dot_outline_colour = background_colour
+    .dot_outline_colour = GColorWhite, /* background_colour, */
   } );
 }
 
@@ -176,10 +178,10 @@ static void minutes_layer_update_proc( Layer *layer, GContext *ctx ) {
     .to_pt = minute_hand,
     .hand_width = MIN_HAND_WIDTH,
     .hand_colour = GColorBlack, /* foreground_colour, */
-    .hand_outline_colour = background_colour,
+    .hand_outline_colour = GColorWhite, /* background_colour, */
     .dot_radius = MIN_CENTER_DOT_RADIUS,
     .dot_colour = GColorBlack,
-    .dot_outline_colour = background_colour
+    .dot_outline_colour = GColorWhite, /* background_colour, */
   } );
 }
 
@@ -206,11 +208,11 @@ static void seconds_layer_update_proc( Layer *layer, GContext *ctx ) {
     .from_pt = sec_hand,
     .to_pt = sec_hand_tail,
     .hand_width = SEC_HAND_WIDTH,
-    .hand_colour = foreground_colour,
-    .hand_outline_colour = background_colour,
+    .hand_colour = GColorOrange,
+    .hand_outline_colour = GColorOrange,
     .dot_radius = SEC_CENTER_DOT_RADIUS,
-    .dot_colour = foreground_colour,
-    .dot_outline_colour = background_colour
+    .dot_colour = GColorOrange,
+    .dot_outline_colour = GColorOrange
   } );
   
   /*
@@ -229,13 +231,13 @@ static void seconds_layer_update_proc( Layer *layer, GContext *ctx ) {
 #ifndef ALWAYS_SHOW_SECONDS
 static void stop_seconds_display( void* data ) { // after timer elapses
   secs_display_apptimer = 0;
-  show_seconds = false;
+  show_name = show_seconds = false;
   tick_timer_service_subscribe( MINUTE_UNIT, handle_clock_tick );
 }
 
 void start_seconds_display( AccelAxisType axis, int32_t direction ) {
   tick_timer_service_subscribe( SECOND_UNIT, handle_clock_tick );
-  show_seconds = true;
+  show_name = show_seconds = true;
   if ( secs_display_apptimer ) {
     app_timer_reschedule( secs_display_apptimer, SHOW_SECONDS_TIMER_TIMEOUT_MS );
   } else {
@@ -338,7 +340,7 @@ void clock_init( Window* window ){
     rot_bitmap_set_compositing_mode( m_layer[i], GCompOpSet );
     layer_add_child( dial_layer, (Layer *) m_layer[i] );
     GRect b = layer_get_frame( (Layer *) m_layer[i] );
-    GRect a = grect_centered_from_polar( grect_inset( CLOCK_DIAL_RECT, GEdgeInsets( 11 ) ),
+    GRect a = grect_centered_from_polar( grect_inset( CLOCK_DIAL_RECT, GEdgeInsets( 12 ) ),
                                         GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE ( i * 30 ), GSize( 0, 0 ) );
     // layer_set_update_proc( (Layer *) m_layer[i], r_layer_update_proc );
     b.origin.x = a.origin.x - b.size.w / 2;
