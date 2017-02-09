@@ -104,6 +104,9 @@ static void dial_layer_update_proc( Layer *layer, GContext *ctx ) {
   graphics_context_set_fill_color( ctx, background_colour );
   graphics_fill_rect( ctx, bounds, CLOCK_CORNER_RADIUS, GCornerNone );
 
+  graphics_context_set_fill_color( ctx, GColorBlack );
+  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 4 + 16 ) ), GOvalScaleModeFitCircle, 4, 0, DEG_TO_TRIGANGLE ( 360 ) );
+  
   draw_seconds_ticks( & (DRAW_TICKS_PARAMS) { 
     .layer = layer, 
     .ctx = ctx, 
@@ -155,10 +158,10 @@ static void hours_layer_update_proc( Layer *layer, GContext *ctx ) {
     .to_pt = hour_hand,
     .hand_width = HOUR_HAND_WIDTH,
     .hand_colour =  GColorBrass, /* foreground_colour, */
-    .hand_outline_colour = GColorBlack, /* background_colour, */
+    .hand_outline_colour = GColorBlue, /* GColorBlack, background_colour, */
     .dot_radius = HOUR_CENTER_DOT_RADIUS,
     .dot_colour = GColorBrass,
-    .dot_outline_colour = GColorBlack, /* background_colour, */
+    .dot_outline_colour = GColorBlue, /* GColorBlack, background_colour, */
   } );
   // graphics_context_set_fill_color( ctx, GColorBlue );
   // graphics_fill_circle( ctx, hour_hand, 2 );
@@ -184,10 +187,10 @@ static void minutes_layer_update_proc( Layer *layer, GContext *ctx ) {
     .to_pt = minute_hand,
     .hand_width = MIN_HAND_WIDTH,
     .hand_colour = GColorWhite, /* foreground_colour, */
-    .hand_outline_colour = GColorBlack, /* background_colour, */
+    .hand_outline_colour = GColorRed, /* GColorBlack, background_colour, */
     .dot_radius = MIN_CENTER_DOT_RADIUS,
     .dot_colour = GColorWhite,
-    .dot_outline_colour = GColorBlack, /* background_colour, */
+    .dot_outline_colour = GColorRed, /* GColorBlack, background_colour, */
   } );
   // graphics_context_set_fill_color( ctx, GColorRed );
   // graphics_fill_circle( ctx, minute_hand, 1 );

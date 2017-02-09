@@ -34,7 +34,7 @@ void draw_seconds_ticks( DRAW_TICKS_PARAMS *pDTP ) {
     graphics_context_set_stroke_width( pDTP->ctx, pDTP->tick_thk );
     gpath_draw_outline( pDTP->ctx, gpath );
   }
-  graphics_context_set_fill_color( pDTP->ctx, pDTP->bg_colour );
+  graphics_context_set_fill_color( pDTP->ctx, GColorBlack /* pDTP->bg_colour */ );
   graphics_fill_circle( pDTP->ctx, center_pt, CLOCK_DIAL_SIZE_W/2 - 40 );
   // graphics_fill_rect( pDTP->ctx, grect_inset( bounds, GEdgeInsets( pDTP->tick_length ) ), 0, GCornerNone );
   gpath_destroy( gpath );

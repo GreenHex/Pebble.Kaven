@@ -2,7 +2,7 @@
     "author": "The Resetter",
     "dependencies": {},
     "keywords": [],
-    "name": "kaven-v1.1",
+    "name": "kaven-v1.2",
     "pebble": {
         "displayName": "Kaven",
         "enableMultiJS": true,
@@ -207,14 +207,12 @@
         },
         "sdkVersion": "3",
         "targetPlatforms": [
-            "aplite",
-            "basalt",
-            "diorite"
+            "basalt"
         ],
         "uuid": "30c0d64f-8b47-439f-a8b6-7187ed35ce35",
         "watchapp": {
             "watchface": true
         }
     },
-    "version": "1.1.0"
+    "version": "1.2.0"
 }
