@@ -2,7 +2,7 @@
     "author": "The Resetter",
     "dependencies": {},
     "keywords": [],
-    "name": "kaven-v1.2",
+    "name": "kaven-v1.3",
     "pebble": {
         "displayName": "Kaven",
         "enableMultiJS": true,
@@ -182,7 +182,6 @@
                     "type": "bitmap"
                 },
                 {
-                    "characterRegex": "[a-zA-Z0-9 ]",
                     "file": "fonts/Prelude-Medium.ttf",
                     "name": "FONT_PRELUDE_MEDIUM_30",
                     "targetPlatforms": [
@@ -193,7 +192,6 @@
                     "type": "font"
                 },
                 {
-                    "characterRegex": "[a-zA-Z0-9 ]",
                     "file": "fonts/Prelude Bold.ttf",
                     "name": "FONT_PRELUDE_BOLD_26",
                     "targetPlatforms": [
@@ -214,5 +212,5 @@
             "watchface": true
         }
     },
-    "version": "1.2.0"
+    "version": "1.3.0"
 }

@@ -3,7 +3,7 @@
 #include "utils.h"
 
 extern tm tm_time;
-bool show_name = false;
+bool show_time = false;
 
 static Layer* status_layer = 0;
 static TextLayer *status_text_layer = 0;
@@ -16,6 +16,8 @@ static void status_layer_update_proc( Layer *layer, GContext *ctx ) {
 
 // #define DATE_STRING "%a, %e-%b-%Y"
 #define DATE_STRING "%a %e"
+#define TIME_STRING "%I:%M"
+#define TIME_FULL_HOUR_STRING "%I o'clock"
 #define ALT_STATUS_FONT RESOURCE_ID_FONT_PRELUDE_BOLD_26
 // #define ALT_STATUS_FONT RESOURCE_ID_FONT_PRELUDE_MEDIUM_30
 
@@ -25,10 +27,13 @@ static void status_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   date_window_bounds.origin.x += STATUS_TEXT_HOR_ADJ;
   date_window_bounds.origin.y -= STATUS_TEXT_VER_ADJ;
   graphics_context_set_text_color( ctx, PBL_IF_COLOR_ELSE( GColorArmyGreen, GColorBlack ) /* background_colour */ );
-  // strftime( date_str, sizeof( date_str ), show_name?"KAVAN":DATE_STRING, &tm_time );
-  strftime( date_str, sizeof( date_str ), DATE_STRING, &tm_time );
+  // strftime( date_str, sizeof( date_str ), DATE_STRING, &tm_time );
+  strftime( date_str, sizeof( date_str ), show_time?tm_time.tm_min?TIME_STRING:TIME_FULL_HOUR_STRING:DATE_STRING, &tm_time );
   if ( date_str[3] == date_str[4] ) { // remove double spaces between day and single digit date 
     memmove( &date_str[4], &date_str[5], sizeof( date_str ) - 4 );
+  }
+  if (date_str[0] == '0' ) {
+    memmove( &date_str[0], &date_str[1], sizeof( date_str ) - 1 );
   }
   #ifdef ALT_STATUS_FONT
   GFont font = fonts_load_custom_font( resource_get_handle( ALT_STATUS_FONT ) );

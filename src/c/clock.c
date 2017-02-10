@@ -23,7 +23,7 @@ const uint32_t PBL_64_COLOURS[ NUM_PBL_64_COLOURS ] = {
 };
 #endif
 
-extern bool show_name;
+extern bool show_time;
 
 tm tm_time;
 GColor foreground_colour;
@@ -93,7 +93,7 @@ static void snooze_layer_update_proc( Layer *layer, GContext *ctx ) {
     }
     graphics_draw_bitmap_in_rect( ctx, snooze_bitmap, bounds );
     gbitmap_destroy( snooze_bitmap );
-    change_layer_colours( ctx, layer, GColorWhite, foreground_colour, GColorBlack, background_colour );
+    change_layer_colours( ctx, layer, GColorWhite, foreground_colour, GColorBlack, GColorBlack /* background_colour */ );
     // change_layer_colours( ctx, layer, GColorWhite, background_colour, GColorBlack, GColorJaegerGreen );
   }
 }
@@ -121,7 +121,7 @@ static void dial_layer_update_proc( Layer *layer, GContext *ctx ) {
   graphics_context_set_fill_color( ctx, foreground_colour );
   graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 4 ) ), GOvalScaleModeFitCircle, 16, 0, DEG_TO_TRIGANGLE ( 360 ) );
   graphics_context_set_fill_color( ctx, GColorBrass /* foreground_colour */ );
-  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 24 ) ), GOvalScaleModeFitCircle, 16, 0, DEG_TO_TRIGANGLE ( 360 ) );
+  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 24 ) ), GOvalScaleModeFitCircle, 18, 0, DEG_TO_TRIGANGLE ( 360 ) );
   //
   return;
   //
@@ -247,13 +247,13 @@ static void seconds_layer_update_proc( Layer *layer, GContext *ctx ) {
 #ifndef ALWAYS_SHOW_SECONDS
 static void stop_seconds_display( void* data ) { // after timer elapses
   secs_display_apptimer = 0;
-  show_name = show_seconds = false;
+  show_time = show_seconds = false;
   tick_timer_service_subscribe( MINUTE_UNIT, handle_clock_tick );
 }
 
 static void start_seconds_display( AccelAxisType axis, int32_t direction ) {
   tick_timer_service_subscribe( SECOND_UNIT, handle_clock_tick );
-  show_name = show_seconds = true;
+  show_time = show_seconds = true;
   if ( secs_display_apptimer ) {
     app_timer_reschedule( secs_display_apptimer, SHOW_SECONDS_TIMER_TIMEOUT_MS );
   } else {
@@ -368,7 +368,7 @@ void clock_init( Window* window ){
     rot_bitmap_set_compositing_mode( h_layer[i], GCompOpSet );
     layer_add_child( dial_layer, (Layer *) h_layer[i] );
     GRect digit_rect = layer_get_frame( (Layer *) h_layer[i] );
-    digit_rect = grect_centered_from_polar( grect_inset( CLOCK_DIAL_RECT, GEdgeInsets( 32 ) ),
+    digit_rect = grect_centered_from_polar( grect_inset( CLOCK_DIAL_RECT, GEdgeInsets( 33 ) ),
                                         GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE ( i * 30 ), GSize( digit_rect.size.w, digit_rect.size.h ) );
     // layer_set_update_proc( (Layer *) h_layer[i], r_layer_update_proc );
     layer_set_frame( (Layer *) h_layer[i], digit_rect );
