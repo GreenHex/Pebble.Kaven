@@ -42,6 +42,8 @@ static bool show_seconds = false;
 #endif
 static AppTimer *secs_display_apptimer = 0;
 
+static void start_seconds_display( AccelAxisType axis, int32_t direction );
+
 static uint32_t const two_segments[] = { 200, 200, 200 };
 VibePattern double_vibe_pattern = {
   .durations = two_segments,
@@ -65,8 +67,10 @@ static void handle_clock_tick( struct tm *tick_time, TimeUnits units_changed ) {
   #endif
   
   layer_mark_dirty( dial_layer );
-  if ( ( units_changed & HOUR_UNIT ) && ( !quiet_time_is_active() ) ) vibes_enqueue_custom_pattern( double_vibe_pattern );
-  
+  if ( ( units_changed & HOUR_UNIT ) && ( !quiet_time_is_active() ) ) {
+    vibes_enqueue_custom_pattern( double_vibe_pattern );
+    start_seconds_display( 0, 0 );
+  }
   #ifdef RANDOMIZE_CLOCKFACE_COLOURS
   #if defined( PBL_COLOR )
   if ( units_changed & MINUTE_UNIT ) randomize_colours();
@@ -105,7 +109,7 @@ static void dial_layer_update_proc( Layer *layer, GContext *ctx ) {
   graphics_fill_rect( ctx, bounds, CLOCK_CORNER_RADIUS, GCornerNone );
 
   graphics_context_set_fill_color( ctx, GColorBlack );
-  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 4 + 16 ) ), GOvalScaleModeFitCircle, 4, 0, DEG_TO_TRIGANGLE ( 360 ) );
+  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 4 + 13 ) ), GOvalScaleModeFitCircle, 5, 0, DEG_TO_TRIGANGLE ( 360 ) );
   
   draw_seconds_ticks( & (DRAW_TICKS_PARAMS) { 
     .layer = layer, 
@@ -119,9 +123,9 @@ static void dial_layer_update_proc( Layer *layer, GContext *ctx ) {
   } );
   
   graphics_context_set_fill_color( ctx, foreground_colour );
-  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 4 ) ), GOvalScaleModeFitCircle, 16, 0, DEG_TO_TRIGANGLE ( 360 ) );
+  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 4 ) ), GOvalScaleModeFitCircle, 14, 0, DEG_TO_TRIGANGLE ( 360 ) );
   graphics_context_set_fill_color( ctx, GColorBrass /* foreground_colour */ );
-  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 24 ) ), GOvalScaleModeFitCircle, 18, 0, DEG_TO_TRIGANGLE ( 360 ) );
+  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 21 ) ), GOvalScaleModeFitCircle, 19, 0, DEG_TO_TRIGANGLE ( 360 ) );
   //
   return;
   //
@@ -356,7 +360,7 @@ void clock_init( Window* window ){
     rot_bitmap_set_compositing_mode( m_layer[i], GCompOpSet );
     layer_add_child( dial_layer, (Layer *) m_layer[i] );
     GRect digit_rect = layer_get_frame( (Layer *) m_layer[i] );
-    digit_rect = grect_centered_from_polar( grect_inset( CLOCK_DIAL_RECT, GEdgeInsets( 12 ) ),
+    digit_rect = grect_centered_from_polar( grect_inset( CLOCK_DIAL_RECT, GEdgeInsets( 11 ) ),
                                         GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE ( i * 30 ), GSize( digit_rect.size.w, digit_rect.size.h ) );
     // layer_set_update_proc( (Layer *) m_layer[i], r_layer_update_proc );
     layer_set_frame( (Layer *) m_layer[i], digit_rect );
@@ -368,7 +372,7 @@ void clock_init( Window* window ){
     rot_bitmap_set_compositing_mode( h_layer[i], GCompOpSet );
     layer_add_child( dial_layer, (Layer *) h_layer[i] );
     GRect digit_rect = layer_get_frame( (Layer *) h_layer[i] );
-    digit_rect = grect_centered_from_polar( grect_inset( CLOCK_DIAL_RECT, GEdgeInsets( 33 ) ),
+    digit_rect = grect_centered_from_polar( grect_inset( CLOCK_DIAL_RECT, GEdgeInsets( 31 ) ),
                                         GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE ( i * 30 ), GSize( digit_rect.size.w, digit_rect.size.h ) );
     // layer_set_update_proc( (Layer *) h_layer[i], r_layer_update_proc );
     layer_set_frame( (Layer *) h_layer[i], digit_rect );

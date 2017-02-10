@@ -22,26 +22,29 @@ static void status_layer_update_proc( Layer *layer, GContext *ctx ) {
 // #define ALT_STATUS_FONT RESOURCE_ID_FONT_PRELUDE_MEDIUM_30
 
 static void status_text_layer_update_proc( Layer *layer, GContext *ctx ) {
-  char date_str[] = "AAA, DD-MMM-YYYY";
+  char str[] = "AAA, DD-MMM-YYYY";
   GRect date_window_bounds = layer_get_bounds( layer );
   date_window_bounds.origin.x += STATUS_TEXT_HOR_ADJ;
   date_window_bounds.origin.y -= STATUS_TEXT_VER_ADJ;
   graphics_context_set_text_color( ctx, PBL_IF_COLOR_ELSE( GColorArmyGreen, GColorBlack ) /* background_colour */ );
-  // strftime( date_str, sizeof( date_str ), DATE_STRING, &tm_time );
-  strftime( date_str, sizeof( date_str ), show_time?tm_time.tm_min?TIME_STRING:TIME_FULL_HOUR_STRING:DATE_STRING, &tm_time );
-  if ( date_str[3] == date_str[4] ) { // remove double spaces between day and single digit date 
-    memmove( &date_str[4], &date_str[5], sizeof( date_str ) - 4 );
-  }
-  if (date_str[0] == '0' ) {
-    memmove( &date_str[0], &date_str[1], sizeof( date_str ) - 1 );
+  // strftime( str, sizeof( str ), DATE_STRING, &tm_time );
+  strftime( str, sizeof( str ), show_time?tm_time.tm_min?TIME_STRING:TIME_FULL_HOUR_STRING:DATE_STRING, &tm_time );
+  if ( show_time ) {
+    if ( str[0] == '0' ) {
+      memmove( &str[0], &str[1], sizeof( str ) - 1 );
+    }
+  } else { // it's a date
+    if ( str[3] == str[4] ) { // remove double spaces between day and single digit date 
+      memmove( &str[4], &str[5], sizeof( str ) - 4 );
+    }
   }
   #ifdef ALT_STATUS_FONT
   GFont font = fonts_load_custom_font( resource_get_handle( ALT_STATUS_FONT ) );
-  graphics_draw_text( ctx, date_str, font, date_window_bounds,
+  graphics_draw_text( ctx, str, font, date_window_bounds,
                      GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
   fonts_unload_custom_font( font );
   #else
-  graphics_draw_text( ctx, date_str, fonts_get_system_font( FONT_KEY_BITHAM_30_BLACK ), date_window_bounds,
+  graphics_draw_text( ctx, str, fonts_get_system_font( FONT_KEY_BITHAM_30_BLACK ), date_window_bounds,
                      GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft, NULL );
   #endif
   // make_outline( ctx, layer, GColorDarkGray, GColorBlack );
