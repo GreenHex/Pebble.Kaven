@@ -350,6 +350,8 @@ void clock_init( Window* window ){
   #endif
   GRect animation_minutes_layer_start = GRect( CLOCK_DIAL_RECT.origin.x + CLOCK_DIAL_RECT.size.w, CLOCK_DIAL_RECT.origin.y, CLOCK_DIAL_RECT.size.w, CLOCK_DIAL_RECT.size.h );
   GRect animation_hours_layer_start = GRect( CLOCK_DIAL_RECT.origin.x - CLOCK_DIAL_RECT.size.w, CLOCK_DIAL_RECT.origin.y, CLOCK_DIAL_RECT.size.w, CLOCK_DIAL_RECT.size.h );
+//  GRect animation_minutes_layer_start = GRect( CLOCK_DIAL_POS_X, CLOCK_DIAL_POS_Y, 0, 0 );
+ // GRect animation_hours_layer_start = GRect( CLOCK_DIAL_POS_X + CLOCK_DIAL_SIZE_W/2, CLOCK_DIAL_POS_Y + CLOCK_DIAL_SIZE_H/2, 0, 0 );
   GRect animation_layer_end = CLOCK_DIAL_RECT;
   
   layer_set_update_proc( window_layer, window_layer_update_proc );
@@ -412,8 +414,11 @@ void clock_init( Window* window ){
   
   seconds_layer = layer_create( dial_layer_bounds );
   layer_set_update_proc( seconds_layer, seconds_layer_update_proc );
-  layer_add_child( dial_layer, seconds_layer );
+  layer_add_child( minutes_layer, seconds_layer );
   
+  time_t now = time( NULL );
+  handle_clock_tick( localtime( &now ), 0 );
+
   #ifdef ALLOW_TIMELINE_QV
   unobstructed_area_service_subscribe( (UnobstructedAreaHandlers) { .change = unobstructed_change_proc }, window_layer );
   #endif
@@ -440,9 +445,6 @@ void clock_init( Window* window ){
 }
 
 static void anim_stopped_handler(Animation *animation, bool finished, void *context) {
-  time_t now = time( NULL );
-  handle_clock_tick( localtime( &now ), 0 );
-
   #ifdef ALWAYS_SHOW_SECONDS
   tick_timer_service_subscribe( SECOND_UNIT, handle_clock_tick );
   #else
