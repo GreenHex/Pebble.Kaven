@@ -31,6 +31,8 @@ GColor background_colour;
 
 static Layer *window_layer = 0;
 static Layer *dial_layer = 0;
+static Layer *hours_dial_layer = 0;
+static Layer *minutes_dial_layer = 0;
 static Layer *snooze_layer = 0;
 static Layer *hours_layer = 0;
 static Layer *minutes_layer = 0;
@@ -43,6 +45,7 @@ static bool show_seconds = false;
 static AppTimer *secs_display_apptimer = 0;
 
 static void start_seconds_display( AccelAxisType axis, int32_t direction );
+static void anim_stopped_handler(Animation *animation, bool finished, void *context);
 
 static uint32_t const two_segments[] = { 200, 200, 200 };
 VibePattern double_vibe_pattern = {
@@ -81,8 +84,8 @@ static void handle_clock_tick( struct tm *tick_time, TimeUnits units_changed ) {
 static void window_layer_update_proc( Layer *layer, GContext *ctx ) {
   GRect bounds = layer_get_bounds( layer );
   graphics_context_set_antialiased( ctx, true );
-  graphics_context_set_fill_color( ctx, foreground_colour );
-  graphics_fill_rect( ctx, bounds, 0, GCornerNone );
+  graphics_context_set_fill_color( ctx, GColorBlue );
+  graphics_fill_rect( ctx, CLOCK_DIAL_RECT, 0, GCornerNone );
 }
 
 static void snooze_layer_update_proc( Layer *layer, GContext *ctx ) {
@@ -122,26 +125,24 @@ static void dial_layer_update_proc( Layer *layer, GContext *ctx ) {
     .bg_colour = background_colour
   } );
   
-  graphics_context_set_fill_color( ctx, foreground_colour );
-  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 4 ) ), GOvalScaleModeFitCircle, 14, 0, DEG_TO_TRIGANGLE ( 360 ) );
+  // graphics_context_set_fill_color( ctx, foreground_colour );
+  // graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 4 ) ), GOvalScaleModeFitCircle, 14, 0, DEG_TO_TRIGANGLE ( 360 ) );
+  // graphics_context_set_fill_color( ctx, GColorBrass /* foreground_colour */ );
+  // graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 21 ) ), GOvalScaleModeFitCircle, 19, 0, DEG_TO_TRIGANGLE ( 360 ) );
+}
+
+static void hours_dial_layer_update_proc( Layer *layer, GContext *ctx ) {
+  GRect bounds = layer_get_bounds( layer );
+  graphics_context_set_antialiased( ctx, true );
   graphics_context_set_fill_color( ctx, GColorBrass /* foreground_colour */ );
   graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 21 ) ), GOvalScaleModeFitCircle, 19, 0, DEG_TO_TRIGANGLE ( 360 ) );
-  //
-  return;
-  //
-  draw_seconds_ticks( & (DRAW_TICKS_PARAMS) {
-    .layer = layer,
-    .ctx = ctx,
-    .p_gpath_info = &PATH_TICK,
-    .increment = 15,
-    .tick_thk = 3,
-    .tick_length = 15,
-    .tick_colour = foreground_colour,
-    .bg_colour = background_colour
-  } );
-  graphics_context_set_stroke_color( ctx, background_colour );
-  graphics_context_set_stroke_width( ctx, CLOCK_TICK_EDGE_OFFSET );
-  graphics_draw_round_rect( ctx, grect_inset( bounds, GEdgeInsets( CLOCK_TICK_EDGE_OFFSET / 2 ) ), CLOCK_CORNER_RADIUS );
+}
+
+static void minutes_dial_layer_update_proc( Layer *layer, GContext *ctx ) { 
+  GRect bounds = layer_get_bounds( layer );
+  graphics_context_set_antialiased( ctx, true );
+  graphics_context_set_fill_color( ctx, foreground_colour );
+  graphics_fill_radial( ctx, grect_inset( bounds, GEdgeInsets( 4 ) ), GOvalScaleModeFitCircle, 14, 0, DEG_TO_TRIGANGLE ( 360 ) );
 }
 
 static void hours_layer_update_proc( Layer *layer, GContext *ctx ) {
@@ -172,6 +173,8 @@ static void hours_layer_update_proc( Layer *layer, GContext *ctx ) {
   graphics_context_set_stroke_color( ctx, GColorBlue );
   graphics_context_set_stroke_width( ctx, 1 );
   graphics_draw_line( ctx, center_pt, hour_hand );
+  graphics_context_set_fill_color( ctx, GColorBlue );
+  graphics_fill_circle( ctx, center_pt, 3 );
 }
 
 static void minutes_layer_update_proc( Layer *layer, GContext *ctx ) {
@@ -345,32 +348,45 @@ void clock_init( Window* window ){
   srand( time( NULL ) );
   randomize_colours();
   #endif
+  GRect animation_minutes_layer_start = GRect( CLOCK_DIAL_RECT.origin.x + CLOCK_DIAL_RECT.size.w, CLOCK_DIAL_RECT.origin.y, CLOCK_DIAL_RECT.size.w, CLOCK_DIAL_RECT.size.h );
+  GRect animation_hours_layer_start = GRect( CLOCK_DIAL_RECT.origin.x - CLOCK_DIAL_RECT.size.w, CLOCK_DIAL_RECT.origin.y, CLOCK_DIAL_RECT.size.w, CLOCK_DIAL_RECT.size.h );
+  GRect animation_layer_end = CLOCK_DIAL_RECT;
   
   layer_set_update_proc( window_layer, window_layer_update_proc );
 
   dial_layer = layer_create( CLOCK_DIAL_RECT );
   layer_set_update_proc( dial_layer, dial_layer_update_proc );
   layer_add_child( window_layer, dial_layer );
-  GRect dial_layer_bounds = layer_get_bounds( dial_layer ); 
+  GRect dial_layer_bounds = layer_get_bounds( dial_layer );
+  layer_set_hidden( dial_layer, true );
+  
+  hours_dial_layer = layer_create( animation_hours_layer_start );
+  layer_set_update_proc( hours_dial_layer, hours_dial_layer_update_proc );
+  layer_add_child( window_layer, hours_dial_layer );
+  
+  minutes_dial_layer = layer_create( animation_minutes_layer_start );
+  layer_set_update_proc( minutes_dial_layer, minutes_dial_layer_update_proc );
+  layer_add_child( window_layer, minutes_dial_layer );
   
   for ( int i = 0;  i < NUM_DIGITS ; i++ ) {
     m_bitmap[i] = gbitmap_create_with_resource( M_BITMAPS[i] );
     m_layer[i] = rot_bitmap_layer_create( m_bitmap[i] );
     rot_bitmap_layer_set_angle( m_layer[i], DEG_TO_TRIGANGLE ( i * 30 ) );
     rot_bitmap_set_compositing_mode( m_layer[i], GCompOpSet );
-    layer_add_child( dial_layer, (Layer *) m_layer[i] );
+    layer_add_child( minutes_dial_layer, (Layer *) m_layer[i] );
     GRect digit_rect = layer_get_frame( (Layer *) m_layer[i] );
     digit_rect = grect_centered_from_polar( grect_inset( CLOCK_DIAL_RECT, GEdgeInsets( 11 ) ),
                                         GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE ( i * 30 ), GSize( digit_rect.size.w, digit_rect.size.h ) );
     // layer_set_update_proc( (Layer *) m_layer[i], r_layer_update_proc );
     layer_set_frame( (Layer *) m_layer[i], digit_rect );
   }
+  
   for ( int i = 0;  i < NUM_DIGITS ; i++ ) {
     h_bitmap[i] = gbitmap_create_with_resource( H_BITMAPS[i] );
     h_layer[i] = rot_bitmap_layer_create( h_bitmap[i] );
     rot_bitmap_layer_set_angle( h_layer[i], DEG_TO_TRIGANGLE ( i * 30 ) );
     rot_bitmap_set_compositing_mode( h_layer[i], GCompOpSet );
-    layer_add_child( dial_layer, (Layer *) h_layer[i] );
+    layer_add_child( hours_dial_layer, (Layer *) h_layer[i] );
     GRect digit_rect = layer_get_frame( (Layer *) h_layer[i] );
     digit_rect = grect_centered_from_polar( grect_inset( CLOCK_DIAL_RECT, GEdgeInsets( 31 ) ),
                                         GOvalScaleModeFitCircle, DEG_TO_TRIGANGLE ( i * 30 ), GSize( digit_rect.size.w, digit_rect.size.h ) );
@@ -386,11 +402,13 @@ void clock_init( Window* window ){
   
   hours_layer = layer_create( dial_layer_bounds );
   layer_set_update_proc( hours_layer, hours_layer_update_proc );
-  layer_add_child( dial_layer, hours_layer );
+  layer_add_child( hours_dial_layer, hours_layer );
+  layer_set_hidden( hours_layer, true );
   
   minutes_layer = layer_create( dial_layer_bounds );
   layer_set_update_proc( minutes_layer, minutes_layer_update_proc );
-  layer_add_child( dial_layer, minutes_layer );
+  layer_add_child( minutes_dial_layer, minutes_layer );
+  layer_set_hidden( minutes_layer, true );
   
   seconds_layer = layer_create( dial_layer_bounds );
   layer_set_update_proc( seconds_layer, seconds_layer_update_proc );
@@ -400,16 +418,40 @@ void clock_init( Window* window ){
   unobstructed_area_service_subscribe( (UnobstructedAreaHandlers) { .change = unobstructed_change_proc }, window_layer );
   #endif
   
+  PropertyAnimation *prop_anim_minutes = property_animation_create_layer_frame( minutes_dial_layer, &animation_minutes_layer_start, &animation_layer_end );
+  PropertyAnimation *prop_anim_hours = property_animation_create_layer_frame( hours_dial_layer, &animation_hours_layer_start, &animation_layer_end );
+  
+  Animation *anim_minutes = property_animation_get_animation( prop_anim_minutes );
+  Animation *anim_hours = property_animation_get_animation( prop_anim_hours );
+  
+  const int delay_ms = 10;
+  const int duration_ms = 1000;
+  animation_set_curve( anim_minutes, AnimationCurveEaseInOut );
+  animation_set_delay( anim_minutes, delay_ms);
+  animation_set_duration( anim_minutes, duration_ms);
+  animation_set_curve( anim_hours, AnimationCurveEaseInOut );
+  animation_set_delay( anim_hours, delay_ms);
+  animation_set_duration( anim_hours, duration_ms);
+  
+  Animation *spawn_anim = animation_spawn_create( anim_hours, anim_minutes, NULL );
+  animation_set_handlers( spawn_anim, (AnimationHandlers) { .stopped = anim_stopped_handler }, NULL);
+
+  animation_schedule( spawn_anim );
+}
+
+static void anim_stopped_handler(Animation *animation, bool finished, void *context) {
+  time_t now = time( NULL );
+  handle_clock_tick( localtime( &now ), 0 );
+
   #ifdef ALWAYS_SHOW_SECONDS
   tick_timer_service_subscribe( SECOND_UNIT, handle_clock_tick );
   #else
   tick_timer_service_subscribe( MINUTE_UNIT, handle_clock_tick );
-  #endif
-  #ifndef ALWAYS_SHOW_SECONDS
   accel_tap_service_subscribe( start_seconds_display );
   #endif
-  time_t now = time( NULL );
-  handle_clock_tick( localtime( &now ), 0 );
+  layer_set_hidden( hours_layer, false );
+  layer_set_hidden( minutes_layer, false );
+  layer_set_hidden( dial_layer, false );
 }
 
 void clock_deinit( void ) {
@@ -422,6 +464,8 @@ void clock_deinit( void ) {
   if ( seconds_layer ) layer_destroy( seconds_layer );
   if ( minutes_layer ) layer_destroy( minutes_layer );
   if ( hours_layer ) layer_destroy( hours_layer );
+  if ( hours_dial_layer ) layer_destroy( hours_dial_layer );
+  if ( minutes_dial_layer ) layer_destroy( minutes_dial_layer );
   status_deinit();
   if ( snooze_layer ) layer_destroy( snooze_layer );
   if ( dial_layer ) layer_destroy( dial_layer );
