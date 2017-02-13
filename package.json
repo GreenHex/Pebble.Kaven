@@ -2,7 +2,7 @@
     "author": "The Resetter",
     "dependencies": {},
     "keywords": [],
-    "name": "kaven-v1.6",
+    "name": "kaven-v1.7",
     "pebble": {
         "displayName": "Kaven",
         "enableMultiJS": true,
@@ -212,5 +212,5 @@
             "watchface": true
         }
     },
-    "version": "1.6.0"
+    "version": "1.7.0"
 }
