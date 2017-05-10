@@ -1,2 +1,2 @@
 # Pebble.Kaven
-Teaching my son to tell time
+Pebble watchface to teach my son to tell time
